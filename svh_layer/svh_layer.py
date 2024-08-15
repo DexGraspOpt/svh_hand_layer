@@ -263,8 +263,17 @@ class SvhHandLayer(torch.nn.Module):
     def compute_abnormal_joint_loss(self, theta):
         loss_1 = torch.clamp(theta[:, 0], 0, 1) * 40
         loss_2 = torch.abs(0.4 - theta[:, 3]) * 40
-        # loss_5 = torch.abs(theta[:, [2, 3, 6, 7, 10, 11,  15, 16]] - self.joints_mean[[2, 3, 6, 7, 10, 11, 15, 16]].unsqueeze(0)).sum(dim=-1) * 2
         return loss_1 + loss_2
+
+    def get_init_angle(self):
+        init_angle = torch.tensor([0.4, 0.0,  # thumb
+                                            0.15, # ring
+                                            0.5,  # spread
+                                            0.15,  # little
+                                            0.0, 0.15,  # index
+                                            0.0, 0.15,  # middle
+                                            ], dtype=torch.float, device=self.device)
+        return init_angle
 
     def get_hand_mesh(self, pose, ret):
         bs = pose.shape[0]
@@ -330,7 +339,7 @@ class SvhAnchor(torch.nn.Module):
         # vert_idx
         vert_idx = np.array([
             # thumb finger
-            3452, 3706, 3760, 3767, 3813,
+            3429, 3510, 3804, 3817, 3818,
             1785, 2078,
 
             # index finger
