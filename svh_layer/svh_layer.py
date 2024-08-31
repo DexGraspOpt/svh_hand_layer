@@ -231,11 +231,10 @@ class SvhHandLayer(torch.nn.Module):
         segment_start = 0  # torch.tensor(0, dtype=torch.long)
         finger_start = 0  # torch.tensor(0, dtype=torch.long)
         for link_name in self.order_keys:
-            # end = torch.tensor(self.meshes[link_name][0].shape[0], dtype=torch.long) + segment_start
             end = self.meshes[link_name][0].shape[0] + segment_start
-            hand_segment_indices[link_name] = [segment_start, end]
+            hand_segment_indices[link_name] = torch.arange(segment_start, end)
             if link_name in self.ordered_finger_endeffort:
-                hand_finger_indices[link_name] = [finger_start, end]
+                hand_finger_indices[link_name] = torch.arange(finger_start, end)
                 finger_start = end
             segment_start = end
         return hand_segment_indices, hand_finger_indices
